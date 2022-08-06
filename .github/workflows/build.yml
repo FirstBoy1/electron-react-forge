@@ -1,22 +1,70 @@
 name: Build & Release
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+  pull_request:
 
 jobs:
-  Explore-GitHub-Actions:
-    runs-on: windows-latest
+  build:
+    name: Build (${{ matrix.os }} - ${{ matrix.arch }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macOS-latest, ubuntu-latest, windows-latest]
+        arch: [x64, arm64]
+        include:
+          - os: windows-latest
+            arch: ia32
+          - os: ubuntu-latest
+            arch: armv7l
+        exclude:
+          - os: windows-latest
+            arch: arm64
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted and arch ${{  runner.arch }} by GitHub!"
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - run: echo "Build (${{ matrix.os }} - ${{ matrix.arch }})"
+    #   - uses: actions/checkout@v3
+    #   - name: Setup Node.js
+    #     uses: actions/setup-node@v3.4.1
+    #     with:
+    #       node-version: 16.x
+    #       cache: yarn
+    #   - name: Install
+    #     run: yarn --network-timeout 100000 || yarn --network-timeout 100000 || yarn --network-timeout 100000
+    #   - name: Make
+    #     run: yarn make --arch=${{ matrix.arch }}
+    #   - name: Release
+    #     uses: softprops/action-gh-release@v1
+    #     env:
+    #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #     with:
+    #       draft: true
+    #       files: |
+    #         out/**/*.deb
+    #         out/**/*.dmg
+    #         out/**/*setup*.exe
+    #         out/**/*.nupkg
+    #         out/**/*.rpm
+    #         out/**/*.zip
+    #         out/**/RELEASES
+
+    # steps:
+    #   - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+    #   - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+    #   - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+    #   - name: Check out repository code
+    #     uses: actions/checkout@v3
+    #   - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+    #   - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+    #   - name: List files in the repository
+    #     run: |
+    #       ls ${{ github.workspace }}
+    #   - run: echo "🍏 This job's status is ${{ job.status }}."
   # build:
   #   name: Build (${{ matrix.os }} - ${{ matrix.arch }})
   #   runs-on: ${{ matrix.os }}
