@@ -1,4 +1,6 @@
 const { Sequelize } = require("sequelize")
+const path = require("path")
+const { app } = require("electron")
 
 const sequelize = new Sequelize("database", "user", "password", {
   dialect: "sqlite",
@@ -8,7 +10,7 @@ const sequelize = new Sequelize("database", "user", "password", {
     min: 0,
     idle: 10000,
   },
-  host: "./database.sqlite",
+  host: path.join(app.getPath("userData"), "database.sqlite"),
 })
 
 module.exports = sequelize

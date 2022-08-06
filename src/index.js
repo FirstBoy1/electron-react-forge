@@ -1,4 +1,5 @@
 const { app, BrowserWindow } = require("electron")
+const windowStateKeeper = require("electron-window-state")
 const path = require("path")
 
 const sequelize = require("./database/db.js")
@@ -23,10 +24,16 @@ if (require("electron-squirrel-startup")) {
 }
 
 const createWindow = () => {
+  const mainWindowState = windowStateKeeper({
+    defaultWidth: 1000,
+    defaultHeight: 800,
+  })
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    x: mainWindowState.x,
+    y: mainWindowState.y,
+    width: mainWindowState.width,
+    height: mainWindowState.height,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
@@ -34,10 +41,11 @@ const createWindow = () => {
 
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, "index.html"))
-  mainWindow.maximize()
+  // mainWindow.maximize()
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools()
+  mainWindowState.manage(mainWindow)
 }
 
 // This method will be called when Electron has finished
