@@ -25,34 +25,30 @@ jobs:
           - os: windows-latest
             arch: arm64
     steps:
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted and arch ${{  runner.arch }} by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - run: echo "Build (${{ matrix.os }} - ${{ matrix.arch }})"
-      - run: echo "GITHUB_TOKEN ${{ secrets.GITHUB_TOKEN }}"
-    #   - uses: actions/checkout@v3
-    #   - name: Setup Node.js
-    #     uses: actions/setup-node@v3.4.1
-    #     with:
-    #       node-version: 16.x
-    #       cache: yarn
-    #   - name: Install
-    #     run: yarn --network-timeout 100000 || yarn --network-timeout 100000 || yarn --network-timeout 100000
-    #   - name: Make
-    #     run: yarn make --arch=${{ matrix.arch }}
-    #   - name: Release
-    #     uses: softprops/action-gh-release@v1
-    #     env:
-    #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #     with:
-    #       draft: true
-    #       files: |
-    #         out/**/*.deb
-    #         out/**/*.dmg
-    #         out/**/*setup*.exe
-    #         out/**/*.nupkg
-    #         out/**/*.rpm
-    #         out/**/*.zip
-    #         out/**/RELEASES
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3.4.1
+        with:
+          node-version: 16.x
+          cache: yarn
+      - name: Install
+        run: yarn --network-timeout 100000 || yarn --network-timeout 100000 || yarn --network-timeout 100000
+      - name: Make
+        run: yarn make --arch=${{ matrix.arch }}
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          draft: true
+          files: |
+            out/**/*.deb
+            out/**/*.dmg
+            out/**/*setup*.exe
+            out/**/*.nupkg
+            out/**/*.rpm
+            out/**/*.zip
+            out/**/RELEASES
 
     # steps:
     #   - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
